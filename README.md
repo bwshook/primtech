@@ -1,24 +1,18 @@
-# ThreeTemplate
-A simple three.js typescript webpack node.js template.
-
-## Microsoft Windows 10 Setup
-* Set PowerShell script execution resistrictions for user:
-
-```PowerShell
-Set-ExecutionPolicy RemoteSigned
-```
-
-* Install Node.js
-* Install Visual Studio Code (optional)
+# Primitive Technology
+Begin at the origins of human technological development and work towards a hut to shelter in, a spear to hunt with, and water to drink.
+Planned Features:
+* Macro physics engine.
+* Micro physics engine for chemical transformations.
+* Online Learning Neural Network AI for animals and possible NPCs.
 
 ## Build Project
-```PowerShell
-cd ThreeTemplate
+```Bash
+cd primtech
 npm update
 npm run build
 ```
 
 ## Launch Server
-```PowerShell
+```Bash
 npm start
 ```
