@@ -13,6 +13,8 @@ let clock = new THREE.Clock();
 
 let controls = new FirstPersonControls(camera, renderer.domElement);
 let stats = Stats();
+let infoDiv = document.createElement("div");
+let infoText = document.createTextNode("Hi there and greetings!");
 
 init();
 animate();
@@ -21,6 +23,13 @@ function init() {
     document.body.appendChild(container);
     container.appendChild(stats.dom);
 
+    infoDiv.style.color = "white";
+    infoDiv.style.position = "fixed";
+    infoDiv.style.top = "0px";
+    infoDiv.style.right = "10%";
+    infoDiv.appendChild(infoText);
+    container.appendChild(infoDiv);
+
     camera.position.set(0, 0, 1);
 
     scene.add(mesh);
@@ -28,17 +37,21 @@ function init() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     container.appendChild(renderer.domElement);
     window.addEventListener('resize', OnWindowResize, false);
+    controls.handleResize();
+    controls.lookSpeed = 0.05;
 }
 
 function OnWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    controls.handleResize();
 }
 
 function animate() {
     requestAnimationFrame(animate);
     controls.update(clock.getDelta());
+    infoText.data = controls.viewHalfX;
     renderer.render(scene, camera);
     stats.update();
 }
