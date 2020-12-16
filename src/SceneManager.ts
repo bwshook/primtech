@@ -2,17 +2,11 @@ import * as THREE from "three";
 
 class SceneManager {
     clock: THREE.Clock;
-    canvas: HTMLCanvasElement;
     scene: THREE.Scene;
     renderer: THREE.WebGLRenderer;
     camera: THREE.PerspectiveCamera;
-    width: number;
-    height: number;
 
-    constructor(canvas: HTMLCanvasElement) {
-        this.canvas = canvas;
-        this.width = this.canvas.clientWidth;
-        this.height = this.canvas.clientHeight;
+    constructor() {
         this.clock = new THREE.Clock();
         this.scene = this.setupScene();
         this.renderer = this.setupRenderer();
@@ -26,16 +20,17 @@ class SceneManager {
     }
 
     private setupRenderer(): THREE.WebGLRenderer {
-        let options = { canvas: this.canvas, antialias: true, alpha: true }
+        let options = { antialias: true, alpha: false };
         const renderer = new THREE.WebGLRenderer(options);
-        const DPR = (window.devicePixelRatio) ? window.devicePixelRatio : 1;
-        renderer.setPixelRatio(DPR);
-        renderer.setSize(this.width, this.height);
+        //renderer.setPixelRatio(window.devicePixelRatio);
+        //renderer.setPixelRatio(1);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
         return renderer;
     }
 
     private setupCamera(): THREE.PerspectiveCamera {
-        const aspectRatio = this.width / this.height;
+        const aspectRatio = window.innerWidth/window.innerHeight;
         const fieldOfView = 45;
         const nearPlane = 0.1;
         const farPlane = 10000;
@@ -49,13 +44,11 @@ class SceneManager {
     }
 
     public onWindowResize(): void {
-        this.canvas.style.width = "100%";
-        this.canvas.style.height = "100%";
-        this.width = this.canvas.clientWidth
-        this.height = this.canvas.clientHeight
-        this.camera.aspect = this.width / this.height;
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+        this.camera.aspect = w/h;
         this.camera.updateProjectionMatrix();
-        this.renderer.setSize(this.width, this.height);
+        this.renderer.setSize(w, h);
     }
 }
 

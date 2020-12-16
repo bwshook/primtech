@@ -1,10 +1,9 @@
 // Local modules
 import { PrimTechApp } from "./PrimTechApp";
 
-const container = document.getElementById("canvasCont") as HTMLDivElement;
-const canvas = document.getElementById("canvas3D") as HTMLCanvasElement;
-const app = new PrimTechApp(container, canvas);
+const app = new PrimTechApp();
 
+// Move these into the class (SceneManager)
 bindEventListeners();
 update();
 

@@ -1,7 +1,8 @@
 // Third-Party modules
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
-import { FirstPersonControls } from "three/examples/jsm/controls/FirstPersonControls";
+//import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 // Local modules
 import { SceneManager } from "./SceneManager";
@@ -9,20 +10,19 @@ import { SceneManager } from "./SceneManager";
 class PrimTechApp extends SceneManager {
     stats: Stats;
     infoText: Text;
-    controls: FirstPersonControls;
+    controls: OrbitControls;
 
-    constructor(container: HTMLDivElement, canvas: HTMLCanvasElement) {
-        super(canvas);
-
+    constructor() {
+        super();
         let grid = new THREE.GridHelper(10, 10);
         this.scene.add(grid);
 
-        // Add FPS controls
-        this.controls = new FirstPersonControls(this.camera, this.renderer.domElement);
+        // Add controls
+        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         // Add stats
         this.stats = Stats();
-        container.appendChild(this.stats.dom);
+        document.body.appendChild(this.stats.dom);
 
         // Make info div
         let infoDiv = document.createElement("div");
@@ -32,14 +32,15 @@ class PrimTechApp extends SceneManager {
         infoDiv.style.top = "0px";
         infoDiv.style.right = "10%";
         infoDiv.appendChild(this.infoText);
-        container.appendChild(infoDiv);
+        document.body.appendChild(infoDiv);
 
         this.camera.position.set(0, 0, 10);
+        //this.controls.lock();
     }
 
     public update(): void {
         this.stats.update();
-        this.controls.update(this.clock.getDelta());
+        this.controls.update();
         super.update()
     }
 }
