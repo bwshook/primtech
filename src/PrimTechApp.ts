@@ -1,24 +1,29 @@
 // Third-Party modules
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
-//import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 // Local modules
 import { SceneManager } from "./SceneManager";
+import { MovementControls } from "./MovementControls";
 
 class PrimTechApp extends SceneManager {
     stats: Stats;
     infoText: Text;
-    controls: OrbitControls;
+    controls: MovementControls;
 
     constructor() {
         super();
+
         let grid = new THREE.GridHelper(10, 10);
         this.scene.add(grid);
 
+        let box = new THREE.BoxGeometry();
+        let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        let cube = new THREE.Mesh(box, material);
+        this.scene.add(cube);
+
         // Add controls
-        this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+        this.controls = new MovementControls(this.camera, document.body);
 
         // Add stats
         this.stats = Stats();
@@ -26,22 +31,21 @@ class PrimTechApp extends SceneManager {
 
         // Make info div
         let infoDiv = document.createElement("div");
-        this.infoText = document.createTextNode("Hi there and greetings!");
+        this.infoText = document.createTextNode("Primitive Technology Game");
         infoDiv.style.color = "white";
         infoDiv.style.position = "fixed";
         infoDiv.style.top = "0px";
         infoDiv.style.right = "10%";
         infoDiv.appendChild(this.infoText);
         document.body.appendChild(infoDiv);
-
-        this.camera.position.set(0, 0, 10);
-        //this.controls.lock();
+        this.camera.position.set(0, 2, 10);
     }
 
-    public update(): void {
+    public update: FrameRequestCallback = (time: number) => {
+        requestAnimationFrame(this.update);
         this.stats.update();
-        this.controls.update();
-        super.update()
+        this.controls.update(0.016);
+        super.render();
     }
 }
 

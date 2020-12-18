@@ -11,6 +11,7 @@ class SceneManager {
         this.scene = this.setupScene();
         this.renderer = this.setupRenderer();
         this.camera = this.setupCamera();
+        window.addEventListener("resize", this.onWindowResize);
     }
 
     private setupScene(): THREE.Scene {
@@ -39,11 +40,11 @@ class SceneManager {
         return camera;
     }
 
-    public update(): void {
+    public render(): void {
         this.renderer.render(this.scene, this.camera);
     }
 
-    public onWindowResize(): void {
+    public onWindowResize: EventListener = (event: Event) => {
         let w = window.innerWidth;
         let h = window.innerHeight;
         this.camera.aspect = w/h;
