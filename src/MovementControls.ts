@@ -4,7 +4,9 @@ import { PointerLockControls } from "three/examples/jsm/controls/PointerLockCont
 class MovementControls extends PointerLockControls {
 
     forward: number;
+    forwardSpeed: number;
     strafe: number;
+    strafeSpeed: number;
 
     constructor(camera: Camera, domElement: HTMLElement) {
         super(camera, domElement);
@@ -12,6 +14,11 @@ class MovementControls extends PointerLockControls {
         // Movement States
         this.forward = 0;
         this.strafe = 0;
+
+        // Movement Speeds
+        // km/S
+        this.forwardSpeed = 6*0.001;
+        this.strafeSpeed = 4*0.001;
 
         this.bindEventListeners();
     }
@@ -23,8 +30,9 @@ class MovementControls extends PointerLockControls {
     }
 
     public update(delta: number) {
-        this.moveForward(0.1*this.forward);
-        this.moveRight(0.1*this.strafe);
+        // delta: time in milliseconds
+        this.moveForward(this.forwardSpeed*delta*this.forward);
+        this.moveRight(this.strafeSpeed*delta*this.strafe);
     }
 
     private onClick: EventListener = (event: MouseEvent) => {
