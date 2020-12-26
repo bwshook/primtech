@@ -33,8 +33,8 @@ class SceneManager {
     private setupCamera(): THREE.PerspectiveCamera {
         const aspectRatio = window.innerWidth/window.innerHeight;
         const fieldOfView = 45;
-        const nearPlane = 0.1;
-        const farPlane = 10000;
+        const nearPlane = 0.05;
+        const farPlane = 2000;
         const camera = new THREE.PerspectiveCamera(fieldOfView,
             aspectRatio, nearPlane, farPlane);
         return camera;
