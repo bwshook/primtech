@@ -1,4 +1,4 @@
-import { Camera } from 'three';
+import { Camera, Vector3 } from 'three';
 import { PointerLockControls } from "three/examples/jsm/controls/PointerLockControls";
 
 class MovementControls extends PointerLockControls {
@@ -7,18 +7,27 @@ class MovementControls extends PointerLockControls {
     forwardSpeed: number;
     strafe: number;
     strafeSpeed: number;
+    flyMode: boolean;
+    flySpeed: number;
+
+    camera: Camera;
+    dirVec: Vector3;
 
     constructor(camera: Camera, domElement: HTMLElement) {
         super(camera, domElement);
+        this.camera = camera;
+        this.dirVec = new Vector3();
 
         // Movement States
         this.forward = 0;
         this.strafe = 0;
+        this.flyMode = false;
 
         // Movement Speeds
         // km/S
         this.forwardSpeed = 6*0.001;
         this.strafeSpeed = 4*0.001;
+        this.flySpeed = 8*0.001;
 
         this.bindEventListeners();
     }
@@ -31,8 +40,13 @@ class MovementControls extends PointerLockControls {
 
     public update(delta: number) {
         // delta: time in milliseconds
-        this.moveForward(this.forwardSpeed*delta*this.forward);
-        this.moveRight(this.strafeSpeed*delta*this.strafe);
+        if(this.flyMode) {
+            this.fly(this.flySpeed*delta*this.forward);
+            this.moveRight(this.strafeSpeed*delta*this.strafe);
+        } else {
+            this.moveForward(this.forwardSpeed*delta*this.forward);
+            this.moveRight(this.strafeSpeed*delta*this.strafe);
+        }
     }
 
     private onClick: EventListener = (event: MouseEvent) => {
@@ -86,9 +100,18 @@ class MovementControls extends PointerLockControls {
             case 68: // d
                 this.strafe = 0;
             break;
+            case 70:
+                this.flyMode = !this.flyMode;
+            break;
         }
     }
 
+    public fly(distance: number) {
+        //this.vec.setFromMatrixColumn(this.camera.matrix, 0);
+        this.camera.getWorldDirection(this.dirVec);
+        //this.vec.crossVectors(this.camera.up, this.vec);
+        this.camera.position.addScaledVector(this.dirVec, distance);
+    }
 }
 
 export { MovementControls };
