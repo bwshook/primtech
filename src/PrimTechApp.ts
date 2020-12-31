@@ -13,6 +13,10 @@ class PrimTechApp extends SceneManager {
     controls: MovementControls;
     lastTime: number;
 
+    // Objects
+    sun: THREE.Mesh;
+    sky: THREE.Mesh;
+
     constructor() {
         super();
 
@@ -20,11 +24,11 @@ class PrimTechApp extends SceneManager {
         this.setupLights();
         this.setupSky();
 
-        // Chunk Related Items
-        this.setupGround();
-        this.setupVegetation();
-        this.setupRocks();
-        this.setupSticks();
+        for(let xi = -2; xi <= 2; xi++) {
+            for(let zi = -2; zi <= 2; zi++) {
+                this.setupChunk(xi, zi);
+            }
+        }
 
         this.camera.position.set(0, 2, 10);
 
@@ -93,17 +97,40 @@ class PrimTechApp extends SceneManager {
     }
 
     private setupSky() {
+        // Sky box
         let skyGeo = new THREE.BoxBufferGeometry(1000, 1000, 1000);
         let skyMat = new THREE.MeshBasicMaterial({color: 0x87CEEB, side: THREE.BackSide});
-        let skyMesh = new THREE.Mesh(skyGeo, skyMat);
-        this.scene.add(skyMesh);
+        this.sky = new THREE.Mesh(skyGeo, skyMat);
+        this.scene.add(this.sky);
+        // Sun
+        let sunGeo = new THREE.IcosahedronBufferGeometry(20, 0);
+        let sunMat = new THREE.MeshBasicMaterial({color: 0xfff47d});
+        this.sun = new THREE.Mesh(sunGeo, sunMat);
+        this.sun.translateY(400);
+        this.scene.add(this.sun);
+        // Fog
+        const color = 0xFFFFFF;  // white
+        const near = 10;
+        const far = 1000;
+        this.scene.fog = new THREE.Fog(color, near, far);
     }
 
-    private setupGround() {
+    private setupChunk(x: number, z: number) {
+        this.setupGround(x, z);
+        if(x == 0 && z == 0) {
+            this.setupVegetation();
+            this.setupRocks();
+            this.setupSticks();
+        }
+    }
+
+    private setupGround(x: number, z: number) {
         const groundGeo = new THREE.PlaneGeometry(100, 100, 10, 10);
         groundGeo.rotateX(-0.5*Math.PI);
         const groundMat = new THREE.MeshBasicMaterial({color: 0x74C365});
         const plane = new THREE.Mesh(groundGeo, groundMat);
+        plane.translateX(x*100);
+        plane.translateZ(z*100);
         this.scene.add(plane);
     }
 
@@ -176,6 +203,12 @@ class PrimTechApp extends SceneManager {
 
     public update: FrameRequestCallback = (time: number) => {
         requestAnimationFrame(this.update);
+
+        // Move sun and sky to camera position
+        this.sun.position.copy(this.camera.position);
+        this.sun.translateY(400);
+        this.sky.position.copy(this.camera.position);
+
         let delta = time - this.lastTime;
         this.lastTime = time;
         this.stats.update();
