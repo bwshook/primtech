@@ -20,7 +20,8 @@ class PrimTechApp extends SceneManager {
     rng: MersenneTwister19937;
 
     // Objects
-    sun: THREE.Vector3;
+    sunLight: THREE.HemisphereLight;
+    sunAngle: number;
     sky: Sky;
 
     constructor() {
@@ -72,7 +73,7 @@ class PrimTechApp extends SceneManager {
         // Make fire
         const light = new THREE.PointLight(0xFF8100, 1, 40);
         light.position.set(5, 1, 5);
-        this.scene.add(light);
+        //this.scene.add(light);
     }
 
     private setupCursor() {
@@ -104,21 +105,33 @@ class PrimTechApp extends SceneManager {
         this.sky = new Sky();
         this.sky.scale.setScalar(10000);
         this.scene.add(this.sky);
-        let theta = -90.0*(Math.PI/180.0);
-        this.sun = new THREE.Vector3(Math.cos(theta), Math.sin(theta), 0);
+
+        // Setup Sky Shader Uniforms
         const uniforms = this.sky.material.uniforms;
         uniforms["turbidity"].value = 1.0;
         uniforms["rayleigh"].value = 1.0;
         uniforms["mieCoefficient"].value = 0.005;
         uniforms["mieDirectionalG"].value = 0.7;
-        uniforms[ "sunPosition" ].value.copy(this.sun);
 
-        // Sun Light
-        let currentBright = 1.25*Math.max(0, 2.0*theta/Math.PI) + 0.05;
-        const light = new THREE.HemisphereLight(0xffffff, 0x74C365, currentBright);
-        //const light = new THREE.HemisphereLight(0xfdb353, 0x74C365, 0.3);
-        light.position.copy(this.sun);
-        this.scene.add(light);
+        // Create Sun Light
+        this.sunLight = new THREE.HemisphereLight(0xffffff, 0x74C365, 0);
+        this.scene.add(this.sunLight);
+
+        this.setSunAngle(90.0);
+    }
+
+    private setSunAngle(thetaDeg: number) {
+        const theta = thetaDeg*(Math.PI/180.0);
+        const sunPosition = new THREE.Vector3(Math.cos(theta), Math.sin(theta), 0);
+
+        // Update light intensity
+        //this.sunLight.intensity = 1.25*Math.max(0, 2.0*theta/Math.PI) + 0.05;
+        this.sunLight.intensity = Math.max(0.01, Math.sin(theta))
+        this.sunLight.position.copy(sunPosition);
+
+        // Update sun position in sky
+        const uniforms = this.sky.material.uniforms;
+        uniforms["sunPosition"].value.copy(sunPosition);
     }
 
     private loadChunk(x: number, z: number) {
@@ -227,6 +240,9 @@ class PrimTechApp extends SceneManager {
         else
             info += " Walk Mode"
         this.infoText.data = info;
+
+        const tod = 360.0*(time % 600000)/600000;
+        this.setSunAngle(tod);
         super.render();
     }
 
