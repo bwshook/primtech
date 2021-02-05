@@ -24,11 +24,11 @@ class SceneManager {
         let options = { antialias: true, alpha: false };
         const renderer = new THREE.WebGLRenderer(options);
         //renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setPixelRatio(0.8);
+        renderer.setPixelRatio(1.0);
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.outputEncoding = THREE.sRGBEncoding;
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 0.6;
+        renderer.toneMappingExposure = 0.5;
         document.body.appendChild(renderer.domElement);
         return renderer;
     }

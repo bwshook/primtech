@@ -5,11 +5,22 @@ Planned Features:
 * Micro physics engine for chemical transformations.
 * Online Learning Neural Network AI for animals and possible NPCs.
 
-## Build Project
+## Todo list
+* Software Dev.
+  * Entity Manager
+  * Chunk Manager
+    * Generate geo. primitives
+* Game Dev.
+  * Chunk loading
+  * Bow and arrow demo
+  * Animal NPC demo
+  * Personal energy
+  * Height map generation
+
+## Init. Project
 ```Bash
 cd primtech
 npm update
-npm run build
 ```
 
 ## Launch Server
