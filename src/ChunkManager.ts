@@ -5,51 +5,34 @@ import { MersenneTwister19937 } from "random-js"
 import { real } from "random-js"
 import { integer } from "random-js";
 
+import { FractalPlaneGeometry } from "./FractalPlaneGeometry";
+
 
 export class ChunkManager {
     scene: THREE.Scene;
-    groundPlane: THREE.Mesh;
     rng: MersenneTwister19937;
 
     constructor(scene: THREE.Scene, rng: MersenneTwister19937) {
         this.scene = scene;
         this.rng = rng;
 
-        this.setupGround();
         this.setupVegetation();
-        this.setupRocks();
-        this.setupSticks();
+        // this.setupRocks();
+        // this.setupSticks();
 
-        const chunkRadius = 2;
-        for(let xi = -chunkRadius; xi <= chunkRadius; xi++) {
-            for(let zi = -chunkRadius; zi <= chunkRadius; zi++) {
-                this.loadChunk(xi, zi);
+        for ( let iX = -2; iX <= 2; iX++ ) {
+            for ( let iY = -2; iY <= 2; iY++ ) {
+                this.loadChunk(iX, iY);
             }
         }
     }
 
-    // public update(position) {
-    //   this.scene.remove();
-    // }
-
     private loadChunk(x: number, z: number) {
-        const chunkGround = this.groundPlane.clone();
-        //chunkGround.material.color.setRGB(Math.random(), Math.random(), Math.random());
-        chunkGround.translateX(100*x);
-        chunkGround.translateZ(100*z);
-        this.scene.add(chunkGround);
-    }
-
-    private unloadChunk(x: number, z: number) {
-    }
-
-    private setupGround() {
-        const groundGeo = new THREE.PlaneGeometry(100, 100, 2, 2);
-        groundGeo.rotateX(-0.5*Math.PI);
-        const groundMat = new THREE.MeshStandardMaterial();
-        // groundMat.wireframe = true;
-        groundMat.color.setHex(0x74C365);
-        this.groundPlane = new THREE.Mesh(groundGeo, groundMat);
+        const CHUNK_SIZE = 200.0;
+        let groundGeo = new FractalPlaneGeometry(CHUNK_SIZE, CHUNK_SIZE, 100, 100, x*CHUNK_SIZE, z*CHUNK_SIZE);
+        const groundMat = new THREE.MeshStandardMaterial( { color: 0x95ec7d } );
+        const groundMesh = new THREE.Mesh(groundGeo, groundMat);
+        this.scene.add(groundMesh);
     }
 
     private setupVegetation() {

@@ -11,7 +11,7 @@ import { MovementControls } from "./MovementControls";
 import { ChunkManager } from "./ChunkManager";
 import { EntityManager } from "./EntityManager";
 
-class PrimTechApp extends SceneManager {
+export class PrimTechApp extends SceneManager {
     stats: Stats;
     infoText: Text;
     controls: MovementControls;
@@ -118,9 +118,12 @@ class PrimTechApp extends SceneManager {
         const sunPosition = new THREE.Vector3(Math.cos(theta), Math.sin(theta), 0);
 
         // Update light intensity
-        //this.sunLight.intensity = 1.25*Math.max(0, 2.0*theta/Math.PI) + 0.05;
-        this.sunLight.intensity = Math.max(0.01, Math.sin(theta))
+        let sunIntensity = Math.max(0.01, Math.sin(theta));
+        this.sunLight.intensity = sunIntensity;
         this.sunLight.position.copy(sunPosition);
+        let fogIntensity = 0.8*sunIntensity;
+        let fogColor = new THREE.Color(fogIntensity, fogIntensity*1.1, fogIntensity);
+        this.scene.fog = new THREE.Fog( fogColor.getHex(), 50, 200 );
 
         // Update sun position in sky
         const uniforms = this.sky.material.uniforms;
@@ -141,8 +144,8 @@ class PrimTechApp extends SceneManager {
             info += " Walk Mode"
         this.infoText.data = info;
 
-        //const tod = 360.0*(time % 600000)/600000;
-        this.setSunAngle(120.0);
+        const tod = 360.0*(time % 60000)/60000;
+        this.setSunAngle(tod);
         super.render();
     }
 
@@ -155,5 +158,3 @@ class PrimTechApp extends SceneManager {
     }
 
 }
-
-export { PrimTechApp };
