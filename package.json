@@ -25,6 +25,6 @@
     "mathjs": "^8.1.0",
     "open-simplex-noise": "^2.4.0",
     "random-js": "^2.1.0",
-    "three": "^0.116.1"
+    "three": "^0.137.0"
   }
 }
